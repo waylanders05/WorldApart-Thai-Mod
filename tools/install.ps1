@@ -12,17 +12,20 @@
 $ErrorActionPreference = 'Stop'
 try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch {}
 
-$ModVersion = 'v0.2'
+$ModVersion = 'v0.3'
 $AppId = '4209920'
 $ExpectedBuild = '26646193'
 $RelDir = 'WorldApart_Data\StreamingAssets\yoo\DefaultPackage'
 $BackupName = 'ThaiMod_backup'
 $FILES = @(
-    @{ Name = 'e00c0a8b32ed219ae2ca092b6494e645.bundle'; Label = 'ข้อความภาษาไทย'; Orig = '9b5b1c8426cd13dac149f40d22dee6f7da067fde9cabed1fa32e8b3f572a5c77'; Mod = '14c3592e1288ab7f358886a4c4d7d93bdcf2a55973497038b46491d8da03e6a9';
-       Patch = 'e00c0a8b32ed219ae2ca092b6494e645.wtp'; PatchSha = 'd2b3aefc3279c89dd8dfa0c91d0b1f00f1717a6ec973826463ccbaa9f89457e6'; Old = @('ad92b7daea75048b9ae80d2b357984b7d24689e17aeb34fe207662c9cf5dbb34') },
-    @{ Name = '93df5ce1601125a448e2d6acdeec7357.bundle'; Label = 'ฟอนต์ภาษาไทย'; Orig = 'ee3f173836c41cc5be26e6480f270a768d1d2b59f5480ee98cb69ed41f570686'; Mod = '55ef7bd28298a0507499f397385578b971dd0d345a06ef79029495b69216692b';
-       Patch = '93df5ce1601125a448e2d6acdeec7357.wtp'; PatchSha = '1015a6b256b53029e440d9a0fb47794badb4ffb3a7df4b1c6e97e5406d1117b2'; Old = @('f4f42a08da454242eec89c13a3d17d403046432ba5eddcf1c76be42c6d74a075') }
+    @{ Name = 'e00c0a8b32ed219ae2ca092b6494e645.bundle'; Label = 'ข้อความภาษาไทย'; Orig = '9b5b1c8426cd13dac149f40d22dee6f7da067fde9cabed1fa32e8b3f572a5c77'; Mod = '29bdcd120018fb6a92a5bba9f4f8334d9d189ab395492aa5d92c6eaf92627deb';
+       Patch = 'e00c0a8b32ed219ae2ca092b6494e645.wtp'; PatchSha = '5dc2251b2df269ebad478aaa83aebc653a4e76bfe582cc31688541cd144b19da'; Old = @('ad92b7daea75048b9ae80d2b357984b7d24689e17aeb34fe207662c9cf5dbb34', '14c3592e1288ab7f358886a4c4d7d93bdcf2a55973497038b46491d8da03e6a9') },
+    @{ Name = '93df5ce1601125a448e2d6acdeec7357.bundle'; Label = 'ฟอนต์ภาษาไทย'; Orig = 'ee3f173836c41cc5be26e6480f270a768d1d2b59f5480ee98cb69ed41f570686'; Mod = 'a17a416511f563c572658138c7f04eec20b0acfebc7e8e896112b04be4eb2dfe';
+       Patch = '93df5ce1601125a448e2d6acdeec7357.wtp'; PatchSha = 'dd8c8eadfd26c4ba13fc4c233db1d4d064f4a88becf02d2a9fedc1fc2b31b4ab'; Old = @('f4f42a08da454242eec89c13a3d17d403046432ba5eddcf1c76be42c6d74a075', '55ef7bd28298a0507499f397385578b971dd0d345a06ef79029495b69216692b') }
 )
+$Video = @{ Rel = 'MergedVideoResources~\cine\2010100\Video_cine_2010100_bank_1.mp4'; Label = 'วิดีโอบทกลอนเปิดเรื่อง'; Orig = 'e896c76d3f5355aed8d764c25ccda641cfdb14975ec204d82998fdbaeb94e1a6';
+    Frames = 2144; Tag = 'bcb5f5c08b00a3f7';
+    Args = '-v error -stats -y -i "{SRC}" -vf "drawbox=x=0:y=1910:w=3840:h=250:color=black:t=fill,subtitles=poem_2010100.ass:fontsdir=." -c:v libx264 -preset fast -crf 19 -profile:v main -pix_fmt yuv420p -bf 0 -force_key_frames expr:eq(n,0)+eq(n,30)+eq(n,70)+eq(n,114)+eq(n,154)+eq(n,198)+eq(n,258)+eq(n,312)+eq(n,367)+eq(n,422)+eq(n,454)+eq(n,514)+eq(n,572)+eq(n,632)+eq(n,682)+eq(n,717)+eq(n,777)+eq(n,818)+eq(n,875)+eq(n,930)+eq(n,984)+eq(n,1029)+eq(n,1089)+eq(n,1130)+eq(n,1190)+eq(n,1226)+eq(n,1274)+eq(n,1334)+eq(n,1394)+eq(n,1454)+eq(n,1514)+eq(n,1574)+eq(n,1634)+eq(n,1664)+eq(n,1722)+eq(n,1752)+eq(n,1812)+eq(n,1872)+eq(n,1932)+eq(n,1962)+eq(n,2022)+eq(n,2082)+eq(n,2142)+eq(n,2143) -video_track_timescale 15360 -an -movflags +faststart "{DST}"' }
 $ModRoot = Split-Path -Parent $PSScriptRoot
 
 function Say($msg, $color = 'Gray') { Write-Host $msg -ForegroundColor $color }
@@ -88,6 +91,64 @@ if (Get-Process -Name 'WorldApart' -ErrorAction SilentlyContinue) {
 $dataDir = Join-Path $GameDir $RelDir
 $backupDir = Join-Path $GameDir $BackupName
 
+# ---- opening-poem video: Chinese lines are burned into the picture -------------------------
+# Rebuilt on this PC with the game's own ffmpeg (black out the subtitle bar + draw the Thai .ass).
+# Output is not byte-deterministic, so <backup>\video_2010100.txt records "<sha256> <tag>".
+$saDir = Join-Path $GameDir 'WorldApart_Data\StreamingAssets'
+$vTarget = Join-Path $saDir $Video.Rel
+$vBak = Join-Path $backupDir (Split-Path -Leaf $Video.Rel)
+$vMark = Join-Path $backupDir 'video_2010100.txt'
+
+function Video-State {
+    if (-not (Test-Path -LiteralPath $vTarget)) { return 'missing' }
+    $h = Sha $vTarget
+    if ($h -eq $Video.Orig) { return 'original' }
+    if (Test-Path -LiteralPath $vMark) {
+        $m = (Get-Content -LiteralPath $vMark -Raw).Trim().Split(' ')
+        if ($m[0] -eq $h) { if ($m[1] -eq $Video.Tag) { return 'modded' } else { return 'oldmod' } }
+    }
+    return 'other'
+}
+
+function Video-Skip($why) {
+    Say "ข้าม$($Video.Label): $why" 'Yellow'
+    Say '  (ข้อความและฟอนต์ภาษาไทยยังใช้ได้ตามปกติ เฉพาะกลอนในวิดีโอนี้จะเป็นภาษาจีน)' 'Yellow'
+}
+
+function Install-Video {
+    $st = Video-State
+    if ($st -eq 'modded') { Say "$($Video.Label): ติดตั้งอยู่แล้ว" 'Green'; return }
+    if ($st -eq 'missing' -or $st -eq 'other') { Video-Skip 'ไฟล์วิดีโอไม่ตรงกับเวอร์ชันที่มอดรองรับ'; return }
+    $ff = Join-Path $saDir 'ffmpeg~\ffmpeg.exe'
+    $fp = Join-Path $saDir 'ffmpeg~\ffprobe.exe'
+    if (-not (Test-Path -LiteralPath $ff) -or -not (Test-Path -LiteralPath $fp)) { Video-Skip 'ไม่พบ ffmpeg ของเกม'; return }
+    if (-not ((Test-Path -LiteralPath $vBak) -and ((Sha $vBak) -eq $Video.Orig))) {
+        if ($st -ne 'original') { Video-Skip 'ไม่พบไฟล์สำรองต้นฉบับ (ใช้ Steam > Verify integrity แล้วรันใหม่)'; return }
+        New-Item -ItemType Directory -Force -Path $backupDir | Out-Null
+        Copy-Item -LiteralPath $vTarget -Destination $vBak -Force
+        if ((Sha $vBak) -ne $Video.Orig) { Video-Skip 'สำรองไฟล์เดิมไม่สำเร็จ'; return }
+    }
+    $tmp = $vTarget + '.thaimod_tmp.mp4'
+    Say "กำลังสร้าง$($Video.Label) ... (เข้ารหัสวิดีโอใหม่ ใช้เวลาประมาณ 1-3 นาที)"
+    $ffArgs = $Video.Args.Replace('{SRC}', $vBak).Replace('{DST}', $tmp)
+    $ok = $false
+    try {
+        $proc = Start-Process -FilePath $ff -ArgumentList $ffArgs -WorkingDirectory (Join-Path $ModRoot 'video') -NoNewWindow -Wait -PassThru
+        if ($proc.ExitCode -eq 0 -and (Test-Path -LiteralPath $tmp)) {
+            $n = & $fp -v error -select_streams v -show_entries stream=nb_frames -of csv=p=0 $tmp
+            $ok = ("$n".Trim() -eq "$($Video.Frames)")
+        }
+    } catch { $ok = $false }
+    if (-not $ok) {
+        if (Test-Path -LiteralPath $tmp) { Remove-Item -LiteralPath $tmp -Force }
+        Video-Skip 'สร้างวิดีโอไม่สำเร็จ (ไฟล์เดิมไม่ถูกแตะ)'
+        return
+    }
+    Move-Item -LiteralPath $tmp -Destination $vTarget -Force
+    Set-Content -LiteralPath $vMark -Value "$(Sha $vTarget) $($Video.Tag)" -Encoding Ascii
+    Say "ติดตั้งแล้ว: $($Video.Label)" 'Green'
+}
+
 # ---- check every file BEFORE changing anything --------------------------------------------
 # original = untouched game file, modded = this version, oldmod = an earlier version of this mod
 $plan = @()
@@ -119,10 +180,23 @@ if ($Uninstall) {
             Say "$($p.F.Label): ไม่ได้ติดตั้งมอดอยู่ (ข้าม)"
         }
     }
+    $vst = Video-State
+    if ($vst -eq 'modded' -or $vst -eq 'oldmod') {
+        if ((Test-Path -LiteralPath $vBak) -and ((Sha $vBak) -eq $Video.Orig)) {
+            Copy-Item -LiteralPath $vBak -Destination $vTarget -Force
+            if ((Sha $vTarget) -ne $Video.Orig) { Say "คืนไฟล์ไม่สำเร็จ: $($Video.Label)" 'Red'; Done 4 }
+            Remove-Item -LiteralPath $vMark -Force
+            Say "คืนไฟล์เดิมแล้ว: $($Video.Label)" 'Green'
+        } else {
+            Say "ไม่พบไฟล์สำรองของ $($Video.Label) - ให้ใช้ Steam > Properties > Installed Files > Verify integrity of game files" 'Yellow'
+        }
+    }
     $still = @($FILES | Where-Object {
         $t = Join-Path $dataDir $_.Name
         (Test-Path -LiteralPath $t) -and (Is-Mod $_ (Sha $t))
     })
+    $vst = Video-State
+    if ($vst -eq 'modded' -or $vst -eq 'oldmod') { $still += 'video' }
     if ($still.Count -eq 0 -and (Test-Path -LiteralPath $backupDir)) { Remove-Item -LiteralPath $backupDir -Recurse -Force }
     Say 'ถอนการติดตั้งเสร็จแล้ว เกมกลับเป็นต้นฉบับ' 'Green'
     Done 0
@@ -137,8 +211,7 @@ if ($bad.Count -gt 0) {
 }
 $todo = @($plan | Where-Object { $_.State -eq 'original' -or $_.State -eq 'oldmod' })
 if ($todo.Count -eq 0) {
-    Say 'มอดภาษาไทยเวอร์ชันนี้ติดตั้งอยู่แล้ว ไม่ต้องทำอะไรเพิ่ม' 'Green'
-    Done 0
+    Say 'ข้อความและฟอนต์ภาษาไทยเวอร์ชันนี้ติดตั้งอยู่แล้ว' 'Green'
 }
 
 # ---- patch files present and intact? --------------------------------------------------------
@@ -171,11 +244,13 @@ foreach ($p in $todo) {
 }
 
 # ---- build the Thai files from the originals + patches -------------------------------------
-try {
-    Add-Type -Path (Join-Path $PSScriptRoot 'ThaiModPatcher.cs')
-} catch {
-    Say "เตรียมตัวติดตั้งไม่สำเร็จ (คอมไพล์ ThaiModPatcher.cs ไม่ได้): $($_.Exception.Message)" 'Red'
-    Done 9
+if ($todo.Count -gt 0) {
+    try {
+        Add-Type -Path (Join-Path $PSScriptRoot 'ThaiModPatcher.cs')
+    } catch {
+        Say "เตรียมตัวติดตั้งไม่สำเร็จ (คอมไพล์ ThaiModPatcher.cs ไม่ได้): $($_.Exception.Message)" 'Red'
+        Done 9
+    }
 }
 $installed = @()
 foreach ($p in $todo) {
@@ -202,6 +277,7 @@ foreach ($p in $todo) {
     $installed += $p
     Say "ติดตั้งแล้ว: $($p.F.Label)" 'Green'
 }
+Install-Video
 Say ''
 Say 'ติดตั้งมอดภาษาไทยเสร็จแล้ว!' 'Green'
 Say 'ในเกมให้ไปที่ ตั้งค่า (Settings) > ภาษา (Language) แล้วเลือก "ภาษาไทย" (ช่องเดิมของ English)' 'Cyan'

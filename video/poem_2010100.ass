@@ -1,0 +1,24 @@
+﻿[Script Info]
+ScriptType: v4.00+
+PlayResX: 3840
+PlayResY: 2160
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Poem,ThaiModPoem,112,&H00F2F2F2,&H00F2F2F2,&H00000000,&H00000000,0,0,0,0,100,100,2,0,1,0,0,5,0,0,0,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:01.83,0:00:04.53,Poem,,0,0,0,,{\an5\pos(1920,2004)\fad(267,300)}ณ ปฐมกาลแรกเริม
+Dialogue: 0,0:00:04.70,0:00:08.77,Poem,,0,0,0,,{\an5\pos(1920,2004)\fad(267,300)}ฟาดินเดิมทีเปนความโกลาหลหนึงเดียว
+Dialogue: 0,0:00:09.77,0:00:14.33,Poem,,0,0,0,,{\an5\pos(1920,2004)\fad(267,300)}ครันฟาแปรผัน หยินหยางจึงแยกเปนสอง
+Dialogue: 0,0:00:15.07,0:00:22.97,Poem,,0,0,0,,{\an5\pos(1920,2004)\fad(267,300)}ราชันวิญญาณแสวงวิถีสวรรค์ หยังรู้รากวิญญาณ ผ่าสองภพ ตามหาชีวิตยืนยาว
+Dialogue: 0,0:00:24.23,0:00:29.23,Poem,,0,0,0,,{\an5\pos(1920,2004)\fad(267,300)}ฟาแปรผันอีกครา มหามรรคาสินราก
+Dialogue: 0,0:00:29.67,0:00:37.60,Poem,,0,0,0,,{\an5\pos(1920,2004)\fad(267,300)}จอมมารบดบังธรรมะอธรรม ปล่อยโลภโทสะ ครอบงำแปดทิศ พลิกฟาดิน
+Dialogue: 0,0:00:38.27,0:00:43.33,Poem,,0,0,0,,{\an5\pos(1920,2004)\fad(267,300)}ทว่าศึกนีทังเทพและมารล้วนดับสูญ นภาแตกร้าวพังทลาย
+Dialogue: 0,0:00:43.70,0:00:46.17,Poem,,0,0,0,,{\an5\pos(1920,2004)\fad(267,300)}จนปราณบริสุทธิรัวไหล
+Dialogue: 0,0:00:47.27,0:00:50.40,Poem,,0,0,0,,{\an5\pos(1920,2004)\fad(267,300)}ปุถุชนไม่อาจก้าวถึงขันเทพจำแลงได้อีก
+Dialogue: 0,0:00:51.43,0:00:54.13,Poem,,0,0,0,,{\an5\pos(1920,2004)\fad(267,300)}คนรุ่นหลังจึงมักกล่าวว่า
+Dialogue: 0,0:00:54.43,0:00:57.40,Poem,,0,0,0,,{\an5\pos(1920,2004)\fad(267,300)}มหามรรคาไร้ปรานี
