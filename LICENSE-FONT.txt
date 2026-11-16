@@ -1,0 +1,8 @@
+Noto Sans Thai
+Copyright 2022 The Noto Project Authors (https://github.com/notofonts/thai)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is available with a FAQ at: https://openfontlicense.org
+
+The Thai glyphs of Noto Sans Thai are merged into a font of the game to display Thai text.
+The patches in this mod carry those Thai glyphs; the mod is distributed free of charge.
