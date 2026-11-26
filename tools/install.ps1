@@ -12,16 +12,16 @@
 $ErrorActionPreference = 'Stop'
 try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch {}
 
-$ModVersion = 'v0.3'
+$ModVersion = 'v0.4'
 $AppId = '4209920'
-$ExpectedBuild = '26646193'
+$ExpectedBuild = '26909647'
 $RelDir = 'WorldApart_Data\StreamingAssets\yoo\DefaultPackage'
 $BackupName = 'ThaiMod_backup'
 $FILES = @(
-    @{ Name = 'e00c0a8b32ed219ae2ca092b6494e645.bundle'; Label = 'ข้อความภาษาไทย'; Orig = '9b5b1c8426cd13dac149f40d22dee6f7da067fde9cabed1fa32e8b3f572a5c77'; Mod = '29bdcd120018fb6a92a5bba9f4f8334d9d189ab395492aa5d92c6eaf92627deb';
-       Patch = 'e00c0a8b32ed219ae2ca092b6494e645.wtp'; PatchSha = '5dc2251b2df269ebad478aaa83aebc653a4e76bfe582cc31688541cd144b19da'; Old = @('ad92b7daea75048b9ae80d2b357984b7d24689e17aeb34fe207662c9cf5dbb34', '14c3592e1288ab7f358886a4c4d7d93bdcf2a55973497038b46491d8da03e6a9') },
+    @{ Name = '635811f8d722b848aace81a368207a54.bundle'; Label = 'ข้อความภาษาไทย'; Orig = '1acccdc8e3bdd20c12187af3a0e67bf36d77ed7232d709d6fb5ee46faebdbbaa'; Mod = '1dbfb3d998265a57dd62a566c8100ce0d422e7be83ebe115c90c5838724562bd';
+       Patch = '635811f8d722b848aace81a368207a54.wtp'; PatchSha = '72776797aaf2dcb2f70b2307c809b7cb9440e0b2fd219467442ef03c408063ac'; Old = @() },
     @{ Name = '93df5ce1601125a448e2d6acdeec7357.bundle'; Label = 'ฟอนต์ภาษาไทย'; Orig = 'ee3f173836c41cc5be26e6480f270a768d1d2b59f5480ee98cb69ed41f570686'; Mod = 'a17a416511f563c572658138c7f04eec20b0acfebc7e8e896112b04be4eb2dfe';
-       Patch = '93df5ce1601125a448e2d6acdeec7357.wtp'; PatchSha = 'dd8c8eadfd26c4ba13fc4c233db1d4d064f4a88becf02d2a9fedc1fc2b31b4ab'; Old = @('f4f42a08da454242eec89c13a3d17d403046432ba5eddcf1c76be42c6d74a075', '55ef7bd28298a0507499f397385578b971dd0d345a06ef79029495b69216692b') }
+       Patch = '93df5ce1601125a448e2d6acdeec7357.wtp'; PatchSha = 'dd8c8eadfd26c4ba13fc4c233db1d4d064f4a88becf02d2a9fedc1fc2b31b4ab'; Old = @('f4f42a08da454242eec89c13a3d17d403046432ba5eddcf1c76be42c6d74a075', '55ef7bd28298a0507499f397385578b971dd0d345a06ef79029495b69216692b', 'a17a416511f563c572658138c7f04eec20b0acfebc7e8e896112b04be4eb2dfe') }
 )
 $Video = @{ Rel = 'MergedVideoResources~\cine\2010100\Video_cine_2010100_bank_1.mp4'; Label = 'วิดีโอบทกลอนเปิดเรื่อง'; Orig = 'e896c76d3f5355aed8d764c25ccda641cfdb14975ec204d82998fdbaeb94e1a6';
     Frames = 2144; Tag = 'bcb5f5c08b00a3f7';
@@ -225,6 +225,10 @@ foreach ($p in $todo) {
 
 # ---- back up the originals (an old-mod file means the backup must already be there) ---------
 New-Item -ItemType Directory -Force -Path $backupDir | Out-Null
+# backups of bundles this version no longer patches (a game update renamed them) are useless now
+$names = @($FILES | ForEach-Object { $_.Name })
+Get-ChildItem -LiteralPath $backupDir -Filter '*.bundle' | Where-Object { $names -notcontains $_.Name } |
+    ForEach-Object { Remove-Item -LiteralPath $_.FullName -Force; Say "ลบไฟล์สำรองเก่าที่ไม่ใช้แล้ว: $($_.Name)" }
 foreach ($p in $todo) {
     $ok = (Test-Path -LiteralPath $p.Bak) -and ((Sha $p.Bak) -eq $p.F.Orig)
     if (-not $ok -and $p.State -eq 'original') {
